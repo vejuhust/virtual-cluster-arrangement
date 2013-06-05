@@ -1,0 +1,7 @@
+N                       //物理结点数量   the number of physical nodes
+M                       //各结点虚拟机的数量   the number of virtual nodes in each physical node
+c[1][1]......c[1][M]    //c[i][j]矩阵   the processing capability of virtual machine [i][j]
+c[2][1]......c[2][M]    //每行M个
+.........
+c[N][1]......c[N][M]    //共N行
+D[1] D[2] ... D[M]      //D[i]向量，共M个   the processing capability demand of virtual cluster[j]
