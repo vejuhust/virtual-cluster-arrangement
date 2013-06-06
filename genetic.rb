@@ -22,7 +22,8 @@ def evaluate(bitstring)
     satisfied = demands_satisfied(bitstring)
     $d_demands.each_with_index do |di, i|
         satisfied[i] = di - satisfied[i]
-        delta += satisfied[i]**2 if satisfied[i] > 0
+        #delta += satisfied[i]**2 if satisfied[i] > 0
+        delta += satisfied[i]*1.0/di if satisfied[i] > 0
     end
     return (delta == 0) ? ($n_physical_node - bits_count(bitstring)) : (-delta)
 end
@@ -90,8 +91,8 @@ end
 
 if __FILE__ == $0
     num_bits = $n_physical_node
-    max_gens = 100 #$n_physical_node * 50
-    pop_size = 100 #$n_physical_node * 30
+    max_gens = 100 #$n_physical_node * 20
+    pop_size = 100 #$n_physical_node * 50
     p_crossover = 0.98
     p_mutation = 1.0/num_bits
     #$delta_total = $d_demands.map{|x| x**2}.reduce(:+)
