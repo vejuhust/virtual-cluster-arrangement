@@ -19,30 +19,36 @@ def compare(a, b)
     return sum_b <=> sum_a
 end
 
-$c_capicity_clone = $c_capicity.clone
-result = Array.new()
-while !$c_capicity.empty? do
-    $c_capicity.sort! {|a, b| compare(a, b)}
-    selected = $c_capicity.shift
-    result << selected
-    mark = true
-    selected.each_with_index {|ci, i| $d_demands[i] -= ci}
-    $d_demands.each_with_index do |di, i|
-       if di > 0 then
-           mark = false
-           break
-        elsif di < 0 then
-           $d_demands[i] = 0
+def search()
+    result = Array.new()
+    while !$c_capicity.empty? do
+        $c_capicity.sort! {|a, b| compare(a, b)}
+        selected = $c_capicity.shift
+        result << selected
+        mark = true
+        selected.each_with_index {|ci, i| $d_demands[i] -= ci}
+        $d_demands.each_with_index do |di, i|
+           if di > 0 then
+               mark = false
+               break
+            elsif di < 0 then
+               $d_demands[i] = 0
+            end
         end
+        break if mark
     end
-    break if mark
+    return mark ? result : []
 end
-
-if mark then
-    result.collect! {|selected| $c_capicity_clone.index(selected)}
-    result.sort!
-    result.each {|x| print x, ' '}
-    print "\ncount = %d\n" % result.length
-else
-    print "no result\n"
+    
+if __FILE__ == $0
+    $c_capicity_clone = $c_capicity.clone
+    result = search()
+    if result.empty? then
+        print "no result\n"
+    else
+        result.collect! {|selected| $c_capicity_clone.index(selected)}
+        result.sort!
+        result.each {|x| print x, ' '}
+        print "\ncount = %d\n" % result.length
+    end
 end
