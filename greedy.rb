@@ -44,7 +44,7 @@ if __FILE__ == $0
     $c_capicity_clone = $c_capicity.clone
     result = search()
     if result.empty? then
-        print "no result\n"
+        print "no solution\n"
     else
         result.collect! {|selected| $c_capicity_clone.index(selected)}
         result.sort!

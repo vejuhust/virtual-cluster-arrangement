@@ -9,12 +9,17 @@ def bits_count(bitstring)
     return sum
 end
 
-def evaluate(bitstring)
-    delta = 0
+def demands_satisfied(bitstring)
     satisfied = Array.new($m_virtual_node) {0}
     $n_physical_node.times do |i|
         $m_virtual_node.times {|j| satisfied[j] += $c_capicity[i][j]} if bitstring[i].chr == '1'
     end
+    return satisfied
+end
+
+def evaluate(bitstring)
+    delta = 0
+    satisfied = demands_satisfied(bitstring)
     $d_demands.each_with_index do |di, i|
         satisfied[i] = di - satisfied[i]
         delta += satisfied[i]**2 if satisfied[i] > 0
@@ -92,5 +97,18 @@ if __FILE__ == $0
     #$delta_total = $d_demands.map{|x| x**2}.reduce(:+)
     # execute the algorithm
     best = search(max_gens, num_bits, pop_size, p_crossover, p_mutation)
-    puts "done! Solution: f=#{best[:fitness]}, s=#{best[:bitstring]}"
+    
+    is_satisfied = true
+    satisfied = demands_satisfied(best[:bitstring])
+    $d_demands.each_with_index {|di, i| is_satisfied = false if satisfied[i] < di}
+
+    if is_satisfied then
+        result = Array.new()
+        bitstring = best[:bitstring]
+        bitstring.size.times {|i| result << i if bitstring[i].chr=='1'}
+        result.each {|x| print x, ' '}
+        print "\ncount = %d\n" % result.length
+    else
+        print "no solution\n" 
+    end
 end
