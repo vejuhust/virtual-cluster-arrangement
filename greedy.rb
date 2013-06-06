@@ -19,12 +19,12 @@ def compare(a, b)
     return sum_b <=> sum_a
 end
 
-puts "result"
-count = 0
+$c_capicity_clone = $c_capicity.clone
+result = Array.new()
 while !$c_capicity.empty? do
     $c_capicity.sort! {|a, b| compare(a, b)}
     selected = $c_capicity.shift
-    count += 1
+    result << selected
     mark = true
     selected.each_with_index {|ci, i| $d_demands[i] -= ci}
     $d_demands.each_with_index do |di, i|
@@ -35,12 +35,14 @@ while !$c_capicity.empty? do
            $d_demands[i] = 0
         end
     end
-    
-    selected.each {|c| print "[%d]" % c}
-    puts ""
-    if mark then
-        print "count = %d\n" % count
-        exit
-    end
+    break if mark
 end
-print "no result\n"
+
+if mark then
+    result.collect! {|selected| $c_capicity_clone.index(selected)}
+    result.sort!
+    result.each {|x| print x, ' '}
+    print "\ncount = %d\n" % result.length
+else
+    print "no result\n"
+end
