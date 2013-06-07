@@ -18,6 +18,7 @@ test_index=0
 for infile in "$INDATADIR"/input*.txt
 do
     outfile=${infile//input/output}
+    outfile=${outfile//"$INDATADIR"/"$OUTDATADIR"}
     cp -f "$infile" input.txt
     "$app" > "$outfile"
     printf "[Output %d: %s] %s\n" "$test_index" "$infile" "$result"
