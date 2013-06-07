@@ -6,7 +6,7 @@
 
 #define MAX_N   100
 #define MAX_M   100
-#define MAX_C   1<<23
+#define MAX_C   1<<26
 
 
 typedef struct {
@@ -47,7 +47,7 @@ int main (int argc, const char * argv[]) {
     
     find_solution_range();
     
-    printf("%lld solutions\n", assess_all_solutions());
+    printf("#%lld solutions\n", assess_all_solutions());
     
     return (0);
 }
