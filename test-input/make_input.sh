@@ -9,7 +9,7 @@ function generate() {
     for ((; INDEX < $INDEX_END; INDEX += 1))
     do
         printf "[%.3d] N=%2d M=%2d expect=%2d range=%d\n" $INDEX $2 $3 $4 $5
-        filename=$(printf "%s/input%.3d.txt" "$DATADIR" "$INDEX")
+        filename=$(printf "%s/input%.4d.txt" "$DATADIR" "$INDEX")
         python ./datamaker.py -n $2 -m $3 -e $4 -r $5 > "$filename"
         printf "#N=%2d M=%2d expect=%2d range=%d\n" $2 $3 $4 $5 >> "$filename"
         if [ $? -ne 0 ]
