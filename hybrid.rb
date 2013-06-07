@@ -70,9 +70,55 @@ def reproduce(selected, pop_size, p_cross, p_mutation)
     return children
 end
 
-def search(max_gens, num_bits, pop_size, p_crossover, p_mutation)
+def greedy_compare(a, b)
+    sum_a, sum_b = 0, 0
+    $d_demands.each_with_index do |di, i|
+        sum_a += [a[i], di].min * di
+        sum_b += [b[i], di].min * di
+    end
+    return sum_b <=> sum_a if sum_a != sum_b
+    
+    sum_a, sum_b = 0, 0
+    $d_demands.each_with_index do |di, i|
+        sum_a += a[i] * di
+        sum_b += b[i] * di
+    end
+    return sum_b <=> sum_a
+end
+
+def greedy_bitstring(num_bits)
+    capicity = $c_capicity.clone
+    demands = $d_demands.clone
+    result = Array.new()
+    while !capicity.empty? do
+        capicity.sort! {|a, b| greedy_compare(a, b)}
+        selected = capicity.shift
+        result << selected
+        mark = true
+        selected.each_with_index {|ci, i| demands[i] -= ci}
+        demands.each_with_index do |di, i|
+            if di > 0 then
+                mark = false
+                break
+                elsif di < 0 then
+                demands[i] = 0
+            end
+        end
+        break if mark
+    end
+    if mark then
+        result.collect! {|selected| $c_capicity.index(selected)}
+        bitstring = (0...num_bits).inject(""){|s,i| s<<((result.include?(i))?"1":"0")}
+    else
+        bitstring = ("1"*num_bits)
+    end
+    return bitstring
+end
+
+def search(max_gens, num_bits, pop_size, p_crossover, p_mutation, p_greedy)
+    greedy = greedy_bitstring(num_bits)
     population = Array.new(pop_size) do |i|
-        {:bitstring=>random_bitstring(num_bits)}
+        (rand()<p_greedy) ? {:bitstring=>greedy} : {:bitstring=>random_bitstring(num_bits)}
     end
     population.each{|c| c[:fitness] = evaluate(c[:bitstring])}
     best = population.sort{|x,y| y[:fitness] <=> x[:fitness]}.first
@@ -95,9 +141,9 @@ if __FILE__ == $0
     pop_size = 100 #$n_physical_node * 50
     p_crossover = 0.98
     p_mutation = 1.0/num_bits
-    #$delta_total = $d_demands.map{|x| x**2}.reduce(:+)
+    p_greedy = 0.3
     # execute the algorithm
-    best = search(max_gens, num_bits, pop_size, p_crossover, p_mutation)
+    best = search(max_gens, num_bits, pop_size, p_crossover, p_mutation, p_greedy)
     
     is_satisfied = true
     satisfied = demands_satisfied(best[:bitstring])
