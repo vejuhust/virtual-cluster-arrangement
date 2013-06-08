@@ -1,7 +1,13 @@
 #!/usr/bin/ruby -w
 # coding: utf-8
 
-require "input"
+def data_input(filename)
+    lines = File.open(filename, "r").readlines
+    $n_physical_node = Integer(lines[0])
+    $m_virtual_node = Integer(lines[1])
+    $c_capicity = Array.new($n_physical_node) {|i| lines[i+2].split().collect {|s| Integer(s)}}
+    $d_demands = lines[2+$n_physical_node].split().collect {|s| Integer(s)}
+end
 
 def bits_count(bitstring)
     sum = 0
@@ -90,6 +96,8 @@ def search(max_gens, num_bits, pop_size, p_crossover, p_mutation)
 end
 
 if __FILE__ == $0
+    data_input("input.txt")
+    
     num_bits = $n_physical_node
     max_gens = 100 #$n_physical_node * 20
     pop_size = 100 #$n_physical_node * 50
