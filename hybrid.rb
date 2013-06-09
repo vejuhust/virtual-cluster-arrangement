@@ -145,8 +145,8 @@ if __FILE__ == $0
     data_input("input.txt")
     
     num_bits = $n_physical_node
-    max_gens = 100 #$n_physical_node * 20
-    pop_size = 100 #$n_physical_node * 50
+    max_gens = $n_physical_node * 20
+    pop_size = $n_physical_node * 50
     p_crossover = 0.98
     p_mutation = 1.0/num_bits
     p_greedy = 0.3
